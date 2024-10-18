@@ -1,14 +1,34 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class TubeCollider : MonoBehaviour
 {
+    private TubeManager tubeManager;
+
+    void Start()
+    {
+        // Get the TubeManager from the parent
+        tubeManager = GetComponentInParent<TubeManager>();
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Ball"))
+        Ball ball = other.GetComponent<Ball>();
+        if (ball != null)
         {
-            Debug.Log("Ball entered the tube!");
-            // You can now handle the logic for the ball entering the tube
-            // For example: Call AddBall() method or trigger an animation
+            if (ball.IsMainBall)
+            {
+                ball.transform.DOKill();
+                // Disable the ball's physics when it enters the tube
+                ball.SetPhysics(false);
+                ball.isFalling = false;
+
+                // Add the ball to the TubeManager and adjust remaining balls
+                tubeManager.AddBallToTube(ball);
+
+                // Set the main ball flag to false as it's no longer the active ball
+                ball.IsMainBall = false;
+            }
         }
     }
 }

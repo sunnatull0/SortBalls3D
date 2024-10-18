@@ -314,7 +314,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1725054646}
   - {fileID: 1201538834}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -343,7 +342,7 @@ Transform:
   m_GameObject: {fileID: 754092131}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -1.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -409,8 +408,8 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
-  orthographic size: 5
+  orthographic: 1
+  orthographic size: 7.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -470,7 +469,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1725054646}
   m_Father: {fileID: 735448383}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1201538835
@@ -486,6 +486,72 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 15
+--- !u!1 &1358542395
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1358542397}
+  - component: {fileID: 1358542396}
+  - component: {fileID: 1358542398}
+  m_Layer: 0
+  m_Name: SAFEAREA
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &1358542396
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358542395}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1358542397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358542395}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -3.63, z: 0}
+  m_LocalScale: {x: 10, y: 1, z: 10}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1358542398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1358542395}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55316d5cfb87b2c4297251e6c1a1c4c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1416579418
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,7 +609,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: bd427c45596ba34458b2874fd0043db0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d2d5da991c5682846a66c0edf6152409, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -724,11 +790,11 @@ Transform:
   m_GameObject: {fileID: 1725054645}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -11.25, z: 0}
-  m_LocalScale: {x: 1, y: 10, z: 1}
+  m_LocalPosition: {x: 0, y: 2.75, z: 0}
+  m_LocalScale: {x: 2, y: 30, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 735448383}
+  m_Father: {fileID: 1201538834}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &1725054647
 CapsuleCollider:
@@ -851,15 +917,15 @@ MonoBehaviour:
   ballPrefab: {fileID: 5005692654422471007, guid: 935bd5e7bb24869499e376e65eadb235, type: 3}
   holder: {fileID: 1201538834}
   topPosition: {fileID: 754092132}
-  numberOfTubes: 6
-  ballsPerTube: 3
+  numberOfTubes: 4
+  ballsPerTube: 2
   availableColors:
-  - {fileID: 2100000, guid: 1f9ad3094ea08cd408660982c2184a99, type: 2}
-  - {fileID: 2100000, guid: 81a7d4d000f313f4d8ae1552c7eb329b, type: 2}
-  - {fileID: 2100000, guid: d0bbe2682bb82094f9294a215c7c9a11, type: 2}
-  - {fileID: 2100000, guid: 28266370647fbc249b8753b3a89907ae, type: 2}
   - {fileID: 2100000, guid: 369bf04d67bfd9743a568a7c95341294, type: 2}
+  - {fileID: 2100000, guid: 81a7d4d000f313f4d8ae1552c7eb329b, type: 2}
+  - {fileID: 2100000, guid: 1f9ad3094ea08cd408660982c2184a99, type: 2}
   - {fileID: 2100000, guid: 4f7088df9f760d64f89d7e592ac26c25, type: 2}
+  - {fileID: 2100000, guid: 28266370647fbc249b8753b3a89907ae, type: 2}
+  - {fileID: 2100000, guid: d0bbe2682bb82094f9294a215c7c9a11, type: 2}
   tubeRadius: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
@@ -871,3 +937,4 @@ SceneRoots:
   - {fileID: 735448383}
   - {fileID: 2028241891}
   - {fileID: 754092132}
+  - {fileID: 1358542397}
