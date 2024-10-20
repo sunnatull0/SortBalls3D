@@ -1,9 +1,25 @@
+using System;
 using UnityEngine;
 
 public class TubesHolder : MonoBehaviour
 {
     public float rotationSpeed = 5f; // Adjust this for desired sensitivity
     private bool canRotate = true;
+
+    private void Start()
+    {
+        TubeSpawner.OnLevelComplete += DisableRotation;
+    }
+
+    private void OnDestroy()
+    {
+        TubeSpawner.OnLevelComplete -= DisableRotation;
+    }
+
+    private void DisableRotation()
+    {
+        canRotate = false;
+    }
 
     void Update()
     {

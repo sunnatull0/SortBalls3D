@@ -24,7 +24,20 @@ public class BallFallTrigger : MonoBehaviour
             if (closestTube != null)
             {
                 // Snap the ball to the closest tube
-                SnapBallToTube(ball, closestTube);
+                if (ball.IsMainBall)
+                {
+                    ball.transform.DOKill();
+                    // Disable the ball's physics when it enters the tube
+                    ball.SetPhysics(false);
+                    ball.isFalling = false;
+
+                    // Add the ball to the TubeManager and adjust remaining balls
+                    closestTube.AddBallToTube(ball);
+
+                    // Set the main ball flag to false as it's no longer the active ball
+                    ball.IsMainBall = false;
+                }
+                //SnapBallToTube(ball, closestTube);
             }
             else
             {
@@ -42,9 +55,6 @@ public class BallFallTrigger : MonoBehaviour
         foreach (TubeManager tube in allTubes)
         {
             float distance = Vector3.Distance(ballPosition, tube.transform.position);
-
-            // Log the distance to each tube
-            Debug.Log($"Distance to tube {tube.name}: {distance}");
 
             if (distance < minDistance)
             {

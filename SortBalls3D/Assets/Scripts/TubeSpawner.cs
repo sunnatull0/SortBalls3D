@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class TubeSpawner : MonoBehaviour
 {
@@ -17,6 +20,8 @@ public class TubeSpawner : MonoBehaviour
 
     void Start()
     {
+        IsCompleted = false;
+
         if (availableColors.Length < numberOfTubes)
         {
             Debug.LogError("Number of colors must be greater than or equal to the number of tubes.");
@@ -30,6 +35,18 @@ public class TubeSpawner : MonoBehaviour
         // Wait for all the tweens to complete before moving the bottom-most ball
         Invoke("SpawnBottomBallFromClosestTube", .6f); // Adjust delay based on the tween duration if necessary
     }
+
+    // private void OnDestroy()
+    // {
+    //     foreach (var tube in tubes)
+    //     {
+    //         var tubeManager = tube.GetComponent<TubeManager>();
+    //         if (tubeManager != null)
+    //         {
+    //             tubeManager.OnBallAdded -= CheckLevelCompletion;
+    //         }
+    //     }
+    // }
 
     // Method to initialize the color list with the proper distribution
     void InitializeColorList()
@@ -61,7 +78,10 @@ public class TubeSpawner : MonoBehaviour
             colorIndices[randomIndex] = temp;
         }
     }
-    
+
+    public static event Action OnLevelComplete;
+    public static bool IsCompleted;
+
     void CheckLevelCompletion()
     {
         foreach (GameObject tube in tubes)
@@ -75,7 +95,17 @@ public class TubeSpawner : MonoBehaviour
         }
 
         Debug.Log("Level completed! All tubes are sorted.");
-        Time.timeScale = 0;
+        OnLevelComplete?.Invoke();
+        IsCompleted = true;
+
+        foreach (var tube in tubes)
+        {
+            var tubeManager = tube.GetComponent<TubeManager>();
+            if (tubeManager != null)
+            {
+                tubeManager.OnBallAdded -= CheckLevelCompletion;
+            }
+        }
     }
 
     // Method to spawn tubes in a circular arrangement
@@ -97,7 +127,7 @@ public class TubeSpawner : MonoBehaviour
 
             // Add the tube to the list of tubes
             tubes.Add(newTube);
-            
+
             TubeManager tubeManager = newTube.GetComponent<TubeManager>();
             if (tubeManager != null)
             {
@@ -136,8 +166,8 @@ public class TubeSpawner : MonoBehaviour
                 colorIndices.RemoveAt(0); // Remove the assigned color from the list
             }
         }
-        
-        CheckLevelCompletion(); 
+
+        CheckLevelCompletion();
     }
 
     // Find the closest tube to the camera/player and remove the bottom-most ball
@@ -174,9 +204,15 @@ public class TubeSpawner : MonoBehaviour
             TubeManager tubeManager = chosenTube.GetComponent<TubeManager>();
             if (tubeManager != null)
             {
-                tubeManager.MoveBottomBallToTop(topPosition); // Move the bottom ball of the closest tube to the top position
-                tubeManager.AdjustRemainingBalls();
+                tubeManager.MoveBottomBallToTop(
+                    topPosition); // Move the bottom ball of the closest tube to the top position
+                //tubeManager.AdjustRemainingBalls();
             }
         }
     }
+    
+    
+    
+    
+    
 }

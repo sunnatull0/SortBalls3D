@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.Serialization; // For smooth animations
 
 public class TubeManager : MonoBehaviour
 {
@@ -11,7 +11,18 @@ public class TubeManager : MonoBehaviour
     private List<GameObject> ballsInTube = new List<GameObject>(); // List to track the balls in the tube
 
     private Transform topPosition;
-    public System.Action OnBallAdded; // Event to notify when a ball is added
+    public Action OnBallAdded; // Event to notify when a ball is added
+
+
+    [Space] [SerializeField] private float _fromStartToItsPosition = 0.3f;
+    [SerializeField] private float _fromOutsideToTubeTop = 0.05f;
+    [SerializeField] private float _adjustBalls = 0.3f;
+    [SerializeField] private float _removeBottomBallAfter = 0.3f;
+
+    [Header("Removed Ball")] [SerializeField]
+    private float _scaleDownRemovedBallTime = 0.1f;
+
+    [SerializeField] private float _scaleUpRemovedBallTime = 0.2f;
 
     // Find the TopPosition in the scene during Start
     private void Start()
@@ -36,27 +47,39 @@ public class TubeManager : MonoBehaviour
         Vector3 targetPosition = ballSpawnPosition.localPosition + new Vector3(0, ballIndex, 0);
 
         // Use DoTween to move the ball smoothly to the local target position
-        newBall.transform.DOLocalMove(targetPosition, 0.3f);
+        newBall.transform.DOLocalMove(targetPosition, _fromStartToItsPosition);
     }
 
     // Method to add a ball to the tube
     public void AddBallToTube(Ball ball)
     {
-        // Move the ball to the tube's TopPosition using DoTween
-        ball.transform.DOMove(TubeTopPosition.position, 0.1f).OnComplete(() =>
+        transform.DOScale(new Vector3(1.05f, 1.05f, 1.05f), .1f).OnComplete(() =>
         {
-            // Once the animation completes, make the ball a child of the tube
-            ball.transform.SetParent(transform);
+            transform.DOScale(Vector3.one, .1f);
+        });
+
+        // First, make the ball a child of the tube so its position will move relative to the tube's local space
+        ball.transform.SetParent(transform);
+
+        // Move the ball to the tube's TopPosition using DoTween with local movement
+        ball.transform.DOLocalMove(TubeTopPosition.localPosition, _fromOutsideToTubeTop).OnComplete(() =>
+        {
+            // Apply a scale-down effect
+            ball.transform.DOScale(new Vector3(0.6f, 0.6f, 0.6f), 0.1f).OnComplete(() =>
+            {
+                // Scale back up to its original size
+                ball.transform.DOScale(Vector3.one, 0.1f);
+            });
 
             // Add the ball to the list of balls in the tube
             ballsInTube.Add(ball.gameObject);
-            AdjustRemainingBalls(); /////////////////////////////////////////////////////////////////////////////////
 
+            // Use DoTween sequence to adjust the positions of all remaining balls in the tube
             Sequence ballSequence = DOTween.Sequence();
             for (int i = 0; i < ballsInTube.Count; i++)
             {
                 Vector3 newPosition = ballSpawnPosition.localPosition + new Vector3(0, i, 0);
-                ballSequence.Join(ballsInTube[i].transform.DOLocalMove(newPosition, 0.3f));
+                ballSequence.Join(ballsInTube[i].transform.DOLocalMove(newPosition, _adjustBalls));
             }
 
             ballSequence.OnComplete(() =>
@@ -64,12 +87,11 @@ public class TubeManager : MonoBehaviour
                 OnBallAdded?.Invoke(); // Only check for level completion after animations are done
             });
 
-            // Adjust the positions of all remaining balls in the tube
-
-            // Delay the removal of the bottom-most ball by 0.35 seconds (adjust as needed)
-            StartCoroutine(DelayRemoveBottomBall(0.35f)); // Add delay before removing bottom-most ball
+            // Delay the removal of the bottom-most ball by 0.35 seconds
+            StartCoroutine(DelayRemoveBottomBall(_removeBottomBallAfter));
         });
     }
+
 
     public bool IsTubeSorted()
     {
@@ -98,27 +120,34 @@ public class TubeManager : MonoBehaviour
 
         // Now move the bottom-most ball to the top position
         MoveBottomBallToTop(topPosition);
-        AdjustRemainingBalls();
+        //AdjustRemainingBalls();
     }
+
 
     // Method to move the bottom-most ball to the top position
     public void MoveBottomBallToTop(Transform topPosition)
     {
+        if (TubeSpawner.IsCompleted) return;
+
         GameObject bottomBall = RemoveBottomBall();
         if (bottomBall != null)
         {
             // Animate the ball scaling down to zero before moving it to the top
-            bottomBall.transform.DOScale(Vector3.zero, 0.2f).OnComplete(() =>
-            {
-                // After scaling down, move the ball to the top position
-                bottomBall.transform.SetParent(null); // Un-parent the ball so it's no longer part of the tube hierarchy
-                bottomBall.transform.position = topPosition.position; // Move it to the TopPosition
+            bottomBall.transform.DOScale(Vector3.zero, _scaleDownRemovedBallTime).SetEase(Ease.InBack, 3f).OnComplete(
+                () =>
+                {
+                    AdjustRemainingBalls();
 
-                bottomBall.GetComponent<Ball>().IsMainBall = true;
+                    // After scaling down, move the ball to the top position
+                    bottomBall.transform
+                        .SetParent(null); // Un-parent the ball so it's no longer part of the tube hierarchy
+                    bottomBall.transform.position = topPosition.position; // Move it to the TopPosition
 
-                // Scale the ball back up from zero to its original size at the top position
-                bottomBall.transform.DOScale(Vector3.one, 0.2f);
-            });
+                    bottomBall.GetComponent<Ball>().IsMainBall = true;
+
+                    // Scale the ball back up from zero to its original size at the top position
+                    bottomBall.transform.DOScale(Vector3.one, _scaleUpRemovedBallTime).SetEase(Ease.OutBack, 3.5f);
+                });
         }
     }
 
@@ -131,7 +160,7 @@ public class TubeManager : MonoBehaviour
             Vector3 newPosition = ballSpawnPosition.localPosition + new Vector3(0, i, 0);
 
             // Move the ball smoothly to its new local position
-            ballsInTube[i].transform.DOLocalMove(newPosition, 0.3f); // Use DOLocalMove for local space movement
+            ballsInTube[i].transform.DOLocalMove(newPosition, _adjustBalls); // Use DOLocalMove for local space movement
         }
     }
 
