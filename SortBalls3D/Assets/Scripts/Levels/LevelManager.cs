@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,11 @@ public class LevelManager : MonoBehaviour
     private void Awake()
     {
         LoadLevel(LevelIndex);
+    }
+
+    private void Start()
+    {
+        Application.targetFrameRate = 60;
     }
 
     private void LoadLevel(int levelIndex)
