@@ -17,7 +17,6 @@ public class TubeManager : MonoBehaviour
     [Space] [SerializeField] private float _fromStartToItsPosition = 0.3f;
     [SerializeField] private float _fromOutsideToTubeTop = 0.05f;
     [SerializeField] private float _adjustBalls = 0.3f;
-    [SerializeField] private float _removeBottomBallAfter = 0.3f;
 
     [Header("Removed Ball")] [SerializeField]
     private float _scaleDownRemovedBallTime = 0.1f;
@@ -53,7 +52,7 @@ public class TubeManager : MonoBehaviour
     // Method to add a ball to the tube
     public void AddBallToTube(Ball ball)
     {
-        transform.DOScale(new Vector3(1.05f, 1.05f, 1.05f), .1f).OnComplete(() =>
+        transform.DOScale(new Vector3(1.1f, 1.1f, 1.1f), .1f).OnComplete(() =>
         {
             transform.DOScale(Vector3.one, .1f);
         });
@@ -85,10 +84,8 @@ public class TubeManager : MonoBehaviour
             ballSequence.OnComplete(() =>
             {
                 OnBallAdded?.Invoke(); // Only check for level completion after animations are done
+                MoveBottomBallToTop(topPosition);
             });
-
-            // Delay the removal of the bottom-most ball by 0.35 seconds
-            StartCoroutine(DelayRemoveBottomBall(_removeBottomBallAfter));
         });
     }
 
@@ -136,6 +133,7 @@ public class TubeManager : MonoBehaviour
             bottomBall.transform.DOScale(Vector3.zero, _scaleDownRemovedBallTime).SetEase(Ease.InBack, 3f).OnComplete(
                 () =>
                 {
+                    EffectsManager.Instance.OnBallRemoved(bottomBall.transform, transform);
                     AdjustRemainingBalls();
 
                     // After scaling down, move the ball to the top position
@@ -145,6 +143,7 @@ public class TubeManager : MonoBehaviour
 
                     bottomBall.GetComponent<Ball>().IsMainBall = true;
 
+                    EffectsManager.Instance.OnBallSpawnedAtTop(bottomBall.transform, bottomBall);
                     // Scale the ball back up from zero to its original size at the top position
                     bottomBall.transform.DOScale(Vector3.one, _scaleUpRemovedBallTime).SetEase(Ease.OutBack, 3.5f);
                 });

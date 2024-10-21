@@ -29,7 +29,7 @@ public class Ball : MonoBehaviour
             // Start delayed jump for the main ball
             if (value && !IsFirstJump)
             {
-                StartCoroutine(DelayedJump(0.5f));
+                StartCoroutine(DelayedJump(0f));
             }
         }
     }

@@ -182,7 +182,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumpForce: 5
   isFalling: 0
-  _addTorque: 0
+  _addTorque: 1
   _torqueStrength: 0.5
 --- !u!114 &8085033048266859209
 MonoBehaviour:

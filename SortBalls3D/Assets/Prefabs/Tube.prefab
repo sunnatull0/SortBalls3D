@@ -575,13 +575,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4f45da36b2e71c48b7fc9712981e417, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _winEffect: {fileID: 138190378829756882}
   TubeTopPosition: {fileID: 154807487628784609}
   ballSpawnPosition: {fileID: 9052475117619556568}
   _fromStartToItsPosition: 0.3
   _fromOutsideToTubeTop: 0.07
-  _adjustBalls: 0.3
-  _removeBottomBallAfter: 0.3
+  _adjustBalls: 0.1
   _scaleDownRemovedBallTime: 0.12
   _scaleUpRemovedBallTime: 0.2
 --- !u!114 &7486402481391574354
@@ -958,11 +956,6 @@ PrefabInstance:
 --- !u!4 &138190378829756881 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6509251466952558279, guid: dc80dc0648b96f448a6308dc4f54b132, type: 3}
-  m_PrefabInstance: {fileID: 6611129024689471254}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &138190378829756882 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6509251466952558276, guid: dc80dc0648b96f448a6308dc4f54b132, type: 3}
   m_PrefabInstance: {fileID: 6611129024689471254}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7669997858993658298
