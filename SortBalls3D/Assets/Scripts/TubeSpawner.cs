@@ -12,11 +12,15 @@ public class TubeSpawner : MonoBehaviour
     public Transform topPosition; // Global position 1 meter above all tubes (used later for falling ball logic)
     public int numberOfTubes = 3; // Number of tubes to spawn (T)
     public int ballsPerTube = 3; // Number of balls per tube (B)
+    public float tubeRadius = 2; // The radius of the circular arrangement of tubes
     public Material[] availableColors; // Array of available colors (C)
-    public float tubeRadius = 5f; // The radius of the circular arrangement of tubes
 
     private List<int> colorIndices = new List<int>(); // To track color indices
     private List<GameObject> tubes = new List<GameObject>(); // To track tube instances
+
+    public static event Action OnLevelComplete;
+    public static bool IsCompleted;
+
 
     void Start()
     {
@@ -36,18 +40,6 @@ public class TubeSpawner : MonoBehaviour
         Invoke("SpawnBottomBallFromClosestTube", .6f); // Adjust delay based on the tween duration if necessary
     }
 
-    // private void OnDestroy()
-    // {
-    //     foreach (var tube in tubes)
-    //     {
-    //         var tubeManager = tube.GetComponent<TubeManager>();
-    //         if (tubeManager != null)
-    //         {
-    //             tubeManager.OnBallAdded -= CheckLevelCompletion;
-    //         }
-    //     }
-    // }
-
     // Method to initialize the color list with the proper distribution
     void InitializeColorList()
     {
@@ -63,11 +55,9 @@ public class TubeSpawner : MonoBehaviour
             }
         }
 
-        // Shuffle the color list for randomness
         ShuffleColorList();
     }
 
-    // Method to shuffle the color list
     void ShuffleColorList()
     {
         for (int i = 0; i < colorIndices.Count; i++)
@@ -79,8 +69,6 @@ public class TubeSpawner : MonoBehaviour
         }
     }
 
-    public static event Action OnLevelComplete;
-    public static bool IsCompleted;
 
     void CheckLevelCompletion()
     {
@@ -107,6 +95,7 @@ public class TubeSpawner : MonoBehaviour
             }
         }
     }
+
 
     // Method to spawn tubes in a circular arrangement
     void SpawnTubes()
@@ -149,6 +138,10 @@ public class TubeSpawner : MonoBehaviour
     // Method to spawn balls into each tube (all balls spawn inside the tubes at the start)
     void SpawnBalls()
     {
+        bool isLevelAlreadyCompleted = true; // Track if the level is already sorted
+
+        InitializeColorList(); // Reinitialize colorIndices before each spawn to ensure we have enough colors
+
         foreach (GameObject tube in tubes)
         {
             TubeManager tubeManager = tube.GetComponent<TubeManager>();
@@ -158,17 +151,43 @@ public class TubeSpawner : MonoBehaviour
                 continue;
             }
 
+            // Clear previous balls if any
+            tubeManager.ClearBalls();
+
             // Spawn the given number of balls per tube
             for (int j = 0; j < ballsPerTube; j++)
             {
-                int colorIndex = colorIndices[0];
+                if (colorIndices.Count == 0)
+                {
+                    Debug.LogError("Not enough colors in colorIndices to assign to all balls.");
+                    return;
+                }
+
+                int colorIndex = colorIndices[0]; // Get the first color index
                 tubeManager.SpawnBall(ballPrefab, j, colorIndex, availableColors[colorIndex]);
                 colorIndices.RemoveAt(0); // Remove the assigned color from the list
             }
+
+            // Check if this tube is sorted after spawning
+            if (!tubeManager.IsTubeSorted())
+            {
+                isLevelAlreadyCompleted = false; // If one tube isn't sorted, the level isn't complete
+            }
         }
 
-        CheckLevelCompletion();
+        // If the level is already completed, reshuffle and spawn again
+        if (isLevelAlreadyCompleted)
+        {
+            Debug.Log("Level is already completed, reshuffling balls...");
+            ShuffleColorList();
+            SpawnBalls(); // Respawn the balls
+        }
+        else
+        {
+            CheckLevelCompletion(); // Otherwise, proceed with the normal check
+        }
     }
+
 
     // Find the closest tube to the camera/player and remove the bottom-most ball
     void SpawnBottomBallFromClosestTube()
@@ -210,9 +229,4 @@ public class TubeSpawner : MonoBehaviour
             }
         }
     }
-    
-    
-    
-    
-    
 }

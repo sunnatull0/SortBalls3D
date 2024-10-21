@@ -1,49 +1,35 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    public TubeSpawner tubeSpawner;  // Reference to the TubeSpawner script
+    public static int LevelIndex = 0;
 
-    private List<LevelData> levels = new List<LevelData>
+    [SerializeField] private TubeSpawner _tubeSpawner;
+    [SerializeField] private List<LevelData> _levels;
+
+    private void Awake()
     {
-        new LevelData(2, 2, 2f),   // Level 1: 3 tubes, 3 balls per tube, radius 5
-    };
-
-    private int currentLevelIndex = 0;  // Track the current level index
-
-    void Start()
-    {
-        LoadLevel(currentLevelIndex);  // Load the first level on start
+        LoadLevel(LevelIndex);
     }
 
-    // Method to load a specific level by index
-    public void LoadLevel(int levelIndex)
+    private void LoadLevel(int levelIndex)
     {
-        Debug.Log("Loaded level: " + levelIndex);
-        if (levelIndex < 0 || levelIndex >= levels.Count)
+        if (levelIndex < 0 || levelIndex >= _levels.Count)
         {
-            Debug.LogError("Invalid level index");
-            return;
+            Debug.LogWarning("Level Index out of range. So defaulted to first level!");
+            levelIndex = 0;
         }
-
-        // Clear the current level before loading a new one
-        // tubeSpawner.ClearCurrentLevel();
-
-        // Load the new level with its data
-        // tubeSpawner.InitializeLevel(levels[levelIndex]);
+        
+        _tubeSpawner.numberOfTubes = _levels[levelIndex].NumberOfTubes;
+        _tubeSpawner.ballsPerTube = _levels[levelIndex].BallsPerTube;
+        _tubeSpawner.tubeRadius = _levels[levelIndex].TubeRadius;
     }
 
-    // Method to add new levels
-    public void AddNewLevel(LevelData newLevel)
-    {
-        levels.Add(newLevel);
-    }
-
-    // Example of loading the next level
     public void LoadNextLevel()
     {
-        currentLevelIndex = (currentLevelIndex + 1) % levels.Count;
-        LoadLevel(currentLevelIndex);
+        LevelIndex++;
+        SceneManager.LoadScene(0);
     }
 }

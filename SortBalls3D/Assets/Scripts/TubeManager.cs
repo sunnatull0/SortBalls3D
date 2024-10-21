@@ -110,17 +110,6 @@ public class TubeManager : MonoBehaviour
     }
 
 
-    // Coroutine to delay the removal of the bottom-most ball
-    private IEnumerator DelayRemoveBottomBall(float delay)
-    {
-        yield return new WaitForSeconds(delay); // Wait for the specified delay
-
-        // Now move the bottom-most ball to the top position
-        MoveBottomBallToTop(topPosition);
-        //AdjustRemainingBalls();
-    }
-
-
     // Method to move the bottom-most ball to the top position
     public void MoveBottomBallToTop(Transform topPosition)
     {
@@ -175,4 +164,17 @@ public class TubeManager : MonoBehaviour
 
         return null;
     }
+    
+    public void ClearBalls()
+    {
+        // Loop through all the balls in the tube and destroy them
+        foreach (GameObject ball in ballsInTube)
+        {
+            Destroy(ball);
+        }
+
+        // Clear the list of balls in this tube
+        ballsInTube.Clear();
+    }
+
 }

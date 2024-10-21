@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,13 +10,16 @@ public class UIManager : MonoBehaviour
 {
     public GameObject pausePanel; // The UI panel for pausing the game
     public GameObject completePanel; // The panel that will show after game completion
+    public GameObject blackPanel; // The panel that will show after game completion
 
     private bool isPaused = false; // Bool to track the paused state
 
     void Start()
     {
+        UpdateLevelIndexUI();
         pausePanel.SetActive(false);
         completePanel.SetActive(false);
+        blackPanel.SetActive(false);
 
         TubeSpawner.OnLevelComplete += OnLevelComplete;
     }
@@ -62,9 +66,10 @@ public class UIManager : MonoBehaviour
 
     public void ShowCompletionPanel()
     {
+        blackPanel.SetActive(true);
         // Disable tube rotations and ball behaviors here
         completePanel.SetActive(true); // Show the completion panel
-
+    
         // Smoothly scale the panel in with unscaled time animation
         completePanel.transform.DOScale(Vector3.one, 0.5f).From(Vector3.zero).SetEase(Ease.OutBack).SetUpdate(true);
     }
@@ -82,5 +87,12 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 1;
         SceneManager.LoadScene(0);
+    }
+
+    [SerializeField] private TMP_Text _levelIndexText;
+    private void UpdateLevelIndexUI()
+    {
+        var index = LevelManager.LevelIndex + 1;
+        _levelIndexText.text = index.ToString();
     }
 }
