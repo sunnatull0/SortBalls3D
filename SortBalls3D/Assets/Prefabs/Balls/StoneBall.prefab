@@ -242,7 +242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b257d3920a778484e9bb4edc406c2c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 5
+  jumpForce: 7
   isFalling: 0
   _addTorque: 1
   _torqueStrength: 0.5

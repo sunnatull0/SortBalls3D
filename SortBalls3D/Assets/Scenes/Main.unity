@@ -2457,18 +2457,6 @@ MonoBehaviour:
   - NumberOfTubes: 2
     BallsPerTube: 3
     TubeRadius: 1.25
-  - NumberOfTubes: 3
-    BallsPerTube: 2
-    TubeRadius: 1.25
-  - NumberOfTubes: 3
-    BallsPerTube: 3
-    TubeRadius: 1.25
-  - NumberOfTubes: 3
-    BallsPerTube: 4
-    TubeRadius: 1.25
-  - NumberOfTubes: 4
-    BallsPerTube: 3
-    TubeRadius: 1.25
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

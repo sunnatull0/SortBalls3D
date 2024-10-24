@@ -1,18 +1,17 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
-    public static int LevelIndex = 0;
+    public static int LevelIndex;
 
     [SerializeField] private TubeSpawner _tubeSpawner;
     [SerializeField] private List<LevelData> _levels;
 
     private void Awake()
     {
-        LoadLevel(LevelIndex);
+        LoadLevel(ref LevelIndex);
     }
 
     private void Start()
@@ -20,7 +19,7 @@ public class LevelManager : MonoBehaviour
         Application.targetFrameRate = 60;
     }
 
-    private void LoadLevel(int levelIndex)
+    private void LoadLevel(ref int levelIndex)
     {
         if (levelIndex < 0 || levelIndex >= _levels.Count)
         {
